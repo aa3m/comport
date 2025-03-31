@@ -36,9 +36,9 @@ namespace Comport
                 IDC_PortName.Items.Add(tmp);
             IDC_PortName.SelectedIndex = 0;
             IDC_BaudRate.SelectedIndex = 0;
-            IDC_type.SelectedIndex = 0;
-            IDC_OutputDisplayMode.SelectedIndex = 0;
-            IDC_InputDisplayMode.SelectedIndex = 0;
+            IDC_type.SelectedIndex = 1; // choose ASCII as default AA3M 3/30/25
+            IDC_OutputDisplayMode.SelectedIndex = 3; // choose ASCII as default AA3M 3/30/25
+            IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
 
         }
 
@@ -488,10 +488,32 @@ namespace Comport
 
         private void IDC_test_Click(object sender, EventArgs e)
         {
-            int i = 1000;
-            Byte[] outPacket;
-            outPacket = new Byte[1] { 0x7F };
-            SendPacket(outPacket);
+            //int i = 1000;
+            //Byte[] outPacket;
+            //outPacket = new Byte[1] { 0x7F };
+            //SendPacket(outPacket);
+
+           
+            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK\n\r";
+           
+
+            if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
+            {
+                if (IDC_type.Text == "Hex")
+                {
+                    SendPacket(IDC_Input.Text);
+                }
+                else if (IDC_type.Text == "ASCII")
+                {
+                    SendPacket(convertAsciiTextToHex(IDC_Input.Text));
+                }
+            }
+            else
+            {
+                //PrintSent("Fail");
+            }
+
+
         }
 
 
