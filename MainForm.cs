@@ -467,15 +467,18 @@ namespace Comport
 
         private void IDC_Clear_Click(object sender, EventArgs e)
         {
-            IDC_Output.Text = "";
+            IDC_Output.Text = "";       //clears the inbound window (output) box for the next test packet
             Output_line_count = 0;
         }
 
         private void IDC_ClearInput_Click(object sender, EventArgs e)
         {
             //IDC_Input.Text = "";
-            IDC_Sent.Text = "";
+            IDC_Sent.Text = "";         // clears the outbound window (sent) box for the next test packet
             sent_line_count = 0;
+            IDC_Input.Text = "";        // clears the outbound data (input) box for the next test packet
+            sent_line_count = 0;
+
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -488,14 +491,39 @@ namespace Comport
 
         private void IDC_test_Click(object sender, EventArgs e)
         {
-            //int i = 1000;
-            //Byte[] outPacket;
-            //outPacket = new Byte[1] { 0x7F };
-            //SendPacket(outPacket);
+            IDC_Input.Text = "";    //clears the input data (outbound) box for the next test packet
+            sent_line_count = 0;    //aa3m 3/31/25 reset the outbound window for the next test packet
 
-           
+
             IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK\n\r";
            
+
+            if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
+            {
+                if (IDC_type.Text == "Hex")
+                {
+                    SendPacket(IDC_Input.Text);
+                }
+                else if (IDC_type.Text == "ASCII")
+                {
+                    SendPacket(convertAsciiTextToHex(IDC_Input.Text));
+                }
+            }
+            else
+            {
+                //PrintSent("Fail");
+            }
+
+
+        }
+
+        private void IDC_tncConnect_Click(object sender, EventArgs e)
+        {
+            IDC_Input.Text = "";        // clears the outbound data (input) box for the next test packet
+            sent_line_count = 0;
+
+            IDC_Input.Text += "C AA3M-1\n\r";
+
 
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
             {
