@@ -54,6 +54,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.IDC_Loop = new System.Windows.Forms.CheckBox();
             this.IDC_test = new System.Windows.Forms.Button();
+            this.IDC_tncConnect = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -350,12 +351,24 @@
             this.IDC_test.UseVisualStyleBackColor = true;
             this.IDC_test.Click += new System.EventHandler(this.IDC_test_Click);
             // 
+            // IDC_tncConnect
+            // 
+            this.IDC_tncConnect.Location = new System.Drawing.Point(1639, 1415);
+            this.IDC_tncConnect.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
+            this.IDC_tncConnect.Name = "IDC_tncConnect";
+            this.IDC_tncConnect.Size = new System.Drawing.Size(348, 65);
+            this.IDC_tncConnect.TabIndex = 23;
+            this.IDC_tncConnect.Text = "TNC CONNECT";
+            this.IDC_tncConnect.UseVisualStyleBackColor = true;
+            this.IDC_tncConnect.Click += new System.EventHandler(this.IDC_tncConnect_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(2568, 1668);
+            this.Controls.Add(this.IDC_tncConnect);
             this.Controls.Add(this.IDC_test);
             this.Controls.Add(this.IDC_Loop);
             this.Controls.Add(this.label8);
@@ -416,6 +429,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox IDC_Loop;
         private System.Windows.Forms.Button IDC_test;
+        private System.Windows.Forms.Button IDC_tncConnect;
     }
 }
 
