@@ -495,7 +495,7 @@ namespace Comport
             sent_line_count = 0;    //aa3m 3/31/25 reset the outbound window for the next test packet
 
 
-            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK\n\r";
+            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK";
            
 
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
@@ -522,7 +522,7 @@ namespace Comport
             IDC_Input.Text = "";        // clears the outbound data (input) box for the next test packet
             sent_line_count = 0;
 
-            IDC_Input.Text += "C AA3M-1\n\r";
+            IDC_Input.Text += "C AA3M-1";
 
 
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
