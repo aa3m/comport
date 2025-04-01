@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
+using System.Reflection;
 
 namespace Comport
 {
@@ -275,25 +276,32 @@ namespace Comport
             Byte[] Displaydata;
             iLen = 0;
             data = new Byte[5000];
-
+            
             if (m_COM.IsOpen == true)
             {
                 while ((m_COM.BytesToRead > 0) && (iLen < 5000))
+                
                 {
+                    
                     iTemp = m_COM.ReadByte();
+                    if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
+                        break;          //stop receiving and print what's in the buffer
                     data[iLen++] = (byte)iTemp;
                     Thread.Sleep(10);
+                   
                 }
 
                 if (iLen > 0)
                 {
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
-                        Displaydata[i] = data[i];
-                    
+                    Displaydata[i] = data[i];
+                   
+
                     SafePrintOutput(Displaydata);
                     if(IDC_Loop.Checked == true)
                         SafeSendPacket(Displaydata);
+                                     
                 }
             }            
         }
@@ -495,7 +503,7 @@ namespace Comport
             sent_line_count = 0;    //aa3m 3/31/25 reset the outbound window for the next test packet
 
 
-            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK\n\r";
+            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK";
            
 
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
@@ -522,7 +530,7 @@ namespace Comport
             IDC_Input.Text = "";        // clears the outbound data (input) box for the next test packet
             sent_line_count = 0;
 
-            IDC_Input.Text += "C AA3M-1\n\r";
+            IDC_Input.Text += "C AA3M-1";
 
 
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
