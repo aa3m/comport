@@ -55,6 +55,7 @@
             this.IDC_Loop = new System.Windows.Forms.CheckBox();
             this.IDC_test = new System.Windows.Forms.Button();
             this.IDC_tncConnect = new System.Windows.Forms.Button();
+            this.IDC_GPStimebox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -277,6 +278,7 @@
             "NONE",
             "BOTH",
             "HEX",
+            "GPS",
             "ASCII"});
             this.IDC_OutputDisplayMode.Location = new System.Drawing.Point(2299, 1420);
             this.IDC_OutputDisplayMode.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
@@ -362,12 +364,24 @@
             this.IDC_tncConnect.UseVisualStyleBackColor = true;
             this.IDC_tncConnect.Click += new System.EventHandler(this.IDC_tncConnect_Click);
             // 
+            // IDC_GPStimebox
+            // 
+            this.IDC_GPStimebox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IDC_GPStimebox.Location = new System.Drawing.Point(1874, 1498);
+            this.IDC_GPStimebox.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
+            this.IDC_GPStimebox.Multiline = true;
+            this.IDC_GPStimebox.Name = "IDC_GPStimebox";
+            this.IDC_GPStimebox.ReadOnly = true;
+            this.IDC_GPStimebox.Size = new System.Drawing.Size(213, 59);
+            this.IDC_GPStimebox.TabIndex = 16;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(2568, 1668);
+            this.Controls.Add(this.IDC_GPStimebox);
             this.Controls.Add(this.IDC_tncConnect);
             this.Controls.Add(this.IDC_test);
             this.Controls.Add(this.IDC_Loop);
@@ -430,6 +444,7 @@
         private System.Windows.Forms.CheckBox IDC_Loop;
         private System.Windows.Forms.Button IDC_test;
         private System.Windows.Forms.Button IDC_tncConnect;
+        private System.Windows.Forms.TextBox IDC_GPStimebox;
     }
 }
 

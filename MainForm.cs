@@ -38,7 +38,7 @@ namespace Comport
             IDC_PortName.SelectedIndex = 0;
             IDC_BaudRate.SelectedIndex = 0;
             IDC_type.SelectedIndex = 1; // choose ASCII as default AA3M 3/30/25
-            IDC_OutputDisplayMode.SelectedIndex = 3; // choose ASCII as default AA3M 3/30/25
+            IDC_OutputDisplayMode.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
             IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
 
         }
@@ -388,6 +388,7 @@ namespace Comport
                 IDC_Output.Text += "\r\n"; Output_line_count++;
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
+                IDC_GPStimebox.Text = timestring;
             }
             else if (IDC_OutputDisplayMode.Text == "HEX")
             {
@@ -402,6 +403,23 @@ namespace Comport
 
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
+            }
+            else if (IDC_OutputDisplayMode.Text == "GPS")
+            {
+                char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
+                string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                IDC_Output.Text += timestring + "ASCII  \r\n"; Output_line_count++;
+                for (int i = 0; i < Msg.Length; i++)
+                {
+                    if (((int)cMsg[i] > 32) && (int)cMsg[i] < 127)
+                        IDC_Output.Text += cMsg[i];
+                    else
+                        IDC_Output.Text += " ";
+                }
+                IDC_Output.Text += "\r\n"; Output_line_count++;
+                IDC_Output.SelectionStart = IDC_Output.Text.Length;
+                IDC_Output.ScrollToCaret();
+                IDC_GPStimebox.Text = timestring;
             }
             else if (IDC_OutputDisplayMode.Text == "NONE")
             {
