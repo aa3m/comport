@@ -287,8 +287,9 @@ namespace Comport
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
                         break;          //stop receiving and print what's in the buffer
                     data[iLen++] = (byte)iTemp;
-                    Thread.Sleep(10);
-                   
+                    if (IDC_OutputDisplayMode.Text != "GPS") { 
+                        Thread.Sleep(10);
+                    }
                 }
 
                 if (iLen > 0)
