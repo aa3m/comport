@@ -41,7 +41,7 @@ namespace Comport
             IDC_OutputDisplayMode.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
             IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
             IDC_GPStimebox.Text = "GPS Time";
-
+            IDC_timestampCtrl.SelectedIndex = 0; // Default "ON"  
         }
 
         private void IDC_Send_Click(object sender, EventArgs e)
@@ -377,9 +377,15 @@ namespace Comport
             }
             else if (IDC_OutputDisplayMode.Text == "ASCII")
             {
-                char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
-                string timestring = DateTime.Now.ToString("HH:mm:ss ");
-                IDC_Output.Text += timestring + "ASCII  \r\n"; Output_line_count++;
+               
+                    char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
+
+               
+                    string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                if (IDC_timestampCtrl.Text == "ON")  // Ensure timestamp is ON when displaying ASCII
+                {
+                    IDC_Output.Text += timestring + "ASCII  \r\n"; Output_line_count++;
+                }
                 for (int i = 0; i < Msg.Length; i++)
                 {
                     if(((int)cMsg[i] > 32) && (int)cMsg[i] < 127)
@@ -410,7 +416,10 @@ namespace Comport
             {
                 char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
                 string timestring = DateTime.Now.ToString("HH:mm:ss ");
-                IDC_Output.Text += timestring + "ASCII  \r\n"; Output_line_count++;
+                if (IDC_timestampCtrl.Text == "ON")  // Ensure timestamp is ON when displaying ASCII
+                {
+                    IDC_Output.Text += timestring + "ASCII  \r\n"; Output_line_count++;
+                }
                 for (int i = 0; i < Msg.Length; i++)
                 {
                     if (((int)cMsg[i] > 32) && (int)cMsg[i] < 127)

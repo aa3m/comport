@@ -56,6 +56,8 @@
             this.IDC_test = new System.Windows.Forms.Button();
             this.IDC_tncConnect = new System.Windows.Forms.Button();
             this.IDC_GPStimebox = new System.Windows.Forms.TextBox();
+            this.IDC_timestampCtrl = new System.Windows.Forms.ComboBox();
+            this.Timestamp = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -375,12 +377,37 @@
             this.IDC_GPStimebox.Size = new System.Drawing.Size(213, 59);
             this.IDC_GPStimebox.TabIndex = 16;
             // 
+            // IDC_timestampCtrl
+            // 
+            this.IDC_timestampCtrl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.IDC_timestampCtrl.FormattingEnabled = true;
+            this.IDC_timestampCtrl.Items.AddRange(new object[] {
+            "ON",
+            "OFF"});
+            this.IDC_timestampCtrl.Location = new System.Drawing.Point(2299, 1498);
+            this.IDC_timestampCtrl.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
+            this.IDC_timestampCtrl.Name = "IDC_timestampCtrl";
+            this.IDC_timestampCtrl.Size = new System.Drawing.Size(226, 45);
+            this.IDC_timestampCtrl.TabIndex = 24;
+            // 
+            // Timestamp
+            // 
+            this.Timestamp.AutoSize = true;
+            this.Timestamp.Location = new System.Drawing.Point(2055, 1509);
+            this.Timestamp.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.Timestamp.Name = "Timestamp";
+            this.Timestamp.Size = new System.Drawing.Size(176, 37);
+            this.Timestamp.TabIndex = 18;
+            this.Timestamp.Text = "Timestamp";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(2568, 1668);
+            this.Controls.Add(this.Timestamp);
+            this.Controls.Add(this.IDC_timestampCtrl);
             this.Controls.Add(this.IDC_GPStimebox);
             this.Controls.Add(this.IDC_tncConnect);
             this.Controls.Add(this.IDC_test);
@@ -445,6 +472,8 @@
         private System.Windows.Forms.Button IDC_test;
         private System.Windows.Forms.Button IDC_tncConnect;
         private System.Windows.Forms.TextBox IDC_GPStimebox;
+        private System.Windows.Forms.Label Timestamp;
+        private System.Windows.Forms.ComboBox IDC_timestampCtrl;
     }
 }
 
