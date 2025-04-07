@@ -388,6 +388,7 @@ namespace Comport
                 IDC_Output.Text += "\r\n"; Output_line_count++;
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
+                IDC_GPStimebox.Text = timestring;
             }
             else if (IDC_OutputDisplayMode.Text == "HEX")
             {
