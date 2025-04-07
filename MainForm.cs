@@ -274,10 +274,15 @@ namespace Comport
             int iTemp;
             int iLen;
             Byte[] data;
+            Byte[] GPSdata;
+            Byte[] GPSdataTemp;
             Byte[] Displaydata;
             iLen = 0;
             data = new Byte[5000];
-            
+            GPSdata = new Byte[5000];
+            GPSdataTemp = new Byte[5000];
+            //string[] GPSdataTemp;
+
             if (m_COM.IsOpen == true)
             {
                 while ((m_COM.BytesToRead > 0) && (iLen < 5000))
@@ -298,6 +303,7 @@ namespace Comport
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
                     Displaydata[i] = data[i];
+                    GPSdata = Displaydata;
                    
 
                     SafePrintOutput(Displaydata);
@@ -305,7 +311,20 @@ namespace Comport
                         SafeSendPacket(Displaydata);
                                      
                 }
-            }            
+
+                //string[] GPSdataTemp = System.Text.Encoding.ASCII.GetString(GPSdata).Split(',');
+                //GPSdataTemp = GPSdata StartsWith.("$GN");
+                //IDC_GPStimebox.Text = GPSdata[15].ToString(); //GPSdata contains the receiver string                                         
+                //                                      
+                //IDC_Output.Text = GPSdata.ToString();
+                for (int i = 0; i < iLen; i++)
+                {
+                    GPSdata[i] = data[i];
+
+                    IDC_Output.Text += GPSdata[i].ToString();
+                }
+                //IDC_GPStimebox.Text = GPSdata.ToString(); //GPSdata contains the receiver string
+            }
         }
 
         private void ReceiveData()
