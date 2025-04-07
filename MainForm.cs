@@ -40,6 +40,7 @@ namespace Comport
             IDC_type.SelectedIndex = 1; // choose ASCII as default AA3M 3/30/25
             IDC_OutputDisplayMode.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
             IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
+            IDC_GPStimebox.Text = "GPS Time";
 
         }
 

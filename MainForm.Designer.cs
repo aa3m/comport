@@ -199,10 +199,10 @@
             // 
             // IDC_Clear
             // 
-            this.IDC_Clear.Location = new System.Drawing.Point(2296, 1506);
+            this.IDC_Clear.Location = new System.Drawing.Point(2299, 1594);
             this.IDC_Clear.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
             this.IDC_Clear.Name = "IDC_Clear";
-            this.IDC_Clear.Size = new System.Drawing.Size(238, 137);
+            this.IDC_Clear.Size = new System.Drawing.Size(238, 74);
             this.IDC_Clear.TabIndex = 10;
             this.IDC_Clear.Text = "Clear";
             this.IDC_Clear.UseVisualStyleBackColor = true;
@@ -367,7 +367,7 @@
             // IDC_GPStimebox
             // 
             this.IDC_GPStimebox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IDC_GPStimebox.Location = new System.Drawing.Point(1874, 1498);
+            this.IDC_GPStimebox.Location = new System.Drawing.Point(1318, 1500);
             this.IDC_GPStimebox.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
             this.IDC_GPStimebox.Multiline = true;
             this.IDC_GPStimebox.Name = "IDC_GPStimebox";
