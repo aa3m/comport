@@ -275,25 +275,21 @@ namespace Comport
             int iTemp;
             int iLen;
             Byte[] data;
-            //Byte[] GPSdata;
             Byte[] Displaydata;
             iLen = 0;
             data = new Byte[5000];
-            //GPSdata = new byte[5000];
-            //string mainString = "Hello, welcome to Riverside!";
-     
+            string GPSdata;
 
             if (m_COM.IsOpen == true)
             {
                 while ((m_COM.BytesToRead > 0) && (iLen < 5000))
-                
                 {
-                    
                     iTemp = m_COM.ReadByte();
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
                         break;          //stop receiving and print what's in the buffer
                     data[iLen++] = (byte)iTemp;
-                    if (IDC_OutputDisplayMode.Text != "GPS") { 
+                    if (IDC_OutputDisplayMode.Text != "GPS")
+                    {
                         Thread.Sleep(10);
                     }
                 }
@@ -302,29 +298,25 @@ namespace Comport
                 {
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
-                    Displaydata[i] = data[i];
-                    string GPSdata = Displaydata.ToString();
-                    //GPSdataTemp = System.Text.Encoding.ASCII.GetString(GPSdata).Split(',');
+                        Displaydata[i] = data[i];
+                    GPSdata = System.Text.Encoding.ASCII.GetString(Displaydata);
 
-
-                    //string mainString = GPSdata;
-                    string pattern = "$G";
-                    Match match = Regex.Match(GPSdata, pattern);
-                    if (match.Success)
+                    // Corrected the match logic
+                    if (GPSdata.StartsWith("$G"))
                     {
-                        int offset = match.Index;
+                        int offset = GPSdata.IndexOf("$G");
                         IDC_GPStimebox.Text = offset.ToString();
-                        //IDC_GPStimebox.Text = "no match";
                     }
-                    //IDC_GPStimebox.Text = "no match";
+                    else
+                    {
+                       // IDC_GPStimebox.Text = "no match";
+                    }
 
                     SafePrintOutput(Displaydata);
-                    if(IDC_Loop.Checked == true)
+                    if (IDC_Loop.Checked == true)
                         SafeSendPacket(Displaydata);
-                                     
                 }
-
-                 }
+            }
         }
 
         private void ReceiveData()
