@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Comport
 {
@@ -41,7 +42,7 @@ namespace Comport
             IDC_OutputDisplayMode.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
             IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
             IDC_GPStimebox.Text = "GPS Time";
-            IDC_timestampCtrl.SelectedIndex = 0; // Default "ON"  
+            IDC_timestampCtrl.SelectedIndex = 1; // Default "ON"  0 = OFF, 1 = ON
         }
 
         private void IDC_Send_Click(object sender, EventArgs e)
@@ -274,14 +275,13 @@ namespace Comport
             int iTemp;
             int iLen;
             Byte[] data;
-            Byte[] GPSdata;
-            //Byte[] GPSdataTemp;
+            //Byte[] GPSdata;
             Byte[] Displaydata;
             iLen = 0;
             data = new Byte[5000];
-            GPSdata = new Byte[5000];
-            //GPSdataTemp = new Byte[5000];
-            string[] GPSdataTemp;
+            //GPSdata = new byte[5000];
+            //string mainString = "Hello, welcome to Riverside!";
+     
 
             if (m_COM.IsOpen == true)
             {
@@ -303,9 +303,20 @@ namespace Comport
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
                     Displaydata[i] = data[i];
-                    GPSdata = Displaydata;
+                    string GPSdata = Displaydata.ToString();
                     //GPSdataTemp = System.Text.Encoding.ASCII.GetString(GPSdata).Split(',');
 
+
+                    //string mainString = GPSdata;
+                    string pattern = "$G";
+                    Match match = Regex.Match(GPSdata, pattern);
+                    if (match.Success)
+                    {
+                        int offset = match.Index;
+                        IDC_GPStimebox.Text = offset.ToString();
+                        //IDC_GPStimebox.Text = "no match";
+                    }
+                    //IDC_GPStimebox.Text = "no match";
 
                     SafePrintOutput(Displaydata);
                     if(IDC_Loop.Checked == true)
@@ -404,7 +415,7 @@ namespace Comport
                 IDC_Output.Text += "\r\n"; Output_line_count++;
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
-                IDC_GPStimebox.Text = timestring;
+                //IDC_GPStimebox.Text = timestring;
             }
             else if (IDC_OutputDisplayMode.Text == "HEX")
             {
@@ -438,7 +449,7 @@ namespace Comport
                 IDC_Output.Text += "\r\n"; Output_line_count++;
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
-                IDC_GPStimebox.Text = timestring;
+                //IDC_GPStimebox.Text = timestring;
             }
             else if (IDC_OutputDisplayMode.Text == "NONE")
             {
