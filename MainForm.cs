@@ -279,6 +279,7 @@ namespace Comport
             iLen = 0;
             data = new Byte[5000];
             string GPSdata;
+            string DisplaydataString;
 
             if (m_COM.IsOpen == true)
             {
@@ -288,9 +289,9 @@ namespace Comport
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
                         break;          //stop receiving and print what's in the buffer
                     data[iLen++] = (byte)iTemp;
-                   // if (IDC_OutputDisplayMode.Text != "GPS")
-                   // {
-                        Thread.Sleep(10);
+                    // if (IDC_OutputDisplayMode.Text != "GPS")
+                    // {
+                     Thread.Sleep(1);
                    // }
                 }
 
@@ -299,22 +300,20 @@ namespace Comport
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
                         Displaydata[i] = data[i];
-                    GPSdata = System.Text.Encoding.ASCII.GetString(Displaydata);
+                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
-                    // Corrected the match logic
-                    if (GPSdata.StartsWith("$GPTXT"))
-                    {
-                        int offset = GPSdata.IndexOf("$GPTXT");
-                        IDC_GPStimebox.Text = offset.ToString();
-                    }
-                    else
-                    {
-                       // IDC_GPStimebox.Text = "no match";
-                    }
+                    int offset = DisplaydataString.IndexOf("$GNGGA");
+                    IDC_GPStimebox.Text = offset.ToString();
+                    //IDC_Output.Text = offset.ToString();
+                    if (offset > 0)
+                        IDC_Input.Text = DisplaydataString;
 
+
+                    
                     SafePrintOutput(Displaydata);
                     if (IDC_Loop.Checked == true)
                         SafeSendPacket(Displaydata);
+                    
                 }
             }
         }
