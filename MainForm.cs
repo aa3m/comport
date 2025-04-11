@@ -288,10 +288,10 @@ namespace Comport
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
                         break;          //stop receiving and print what's in the buffer
                     data[iLen++] = (byte)iTemp;
-                    if (IDC_OutputDisplayMode.Text != "GPS")
-                    {
+                   // if (IDC_OutputDisplayMode.Text != "GPS")
+                   // {
                         Thread.Sleep(10);
-                    }
+                   // }
                 }
 
                 if (iLen > 0)
@@ -302,9 +302,9 @@ namespace Comport
                     GPSdata = System.Text.Encoding.ASCII.GetString(Displaydata);
 
                     // Corrected the match logic
-                    if (GPSdata.StartsWith("$G"))
+                    if (GPSdata.StartsWith("$GPTXT"))
                     {
-                        int offset = GPSdata.IndexOf("$G");
+                        int offset = GPSdata.IndexOf("$GPTXT");
                         IDC_GPStimebox.Text = offset.ToString();
                     }
                     else
