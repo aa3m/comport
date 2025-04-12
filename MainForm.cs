@@ -276,8 +276,11 @@ namespace Comport
             int iLen;
             Byte[] data;
             Byte[] Displaydata;
+
             iLen = 0;
             data = new Byte[5000];
+            Displaydata = new Byte[5000];  //works without this line but not sure why
+
             string GPSdata;
             string DisplaydataString;
 
@@ -289,7 +292,9 @@ namespace Comport
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
                         break;          //stop receiving and print what's in the buffer  
                     data[iLen++] = (byte)iTemp;
-                     if (IDC_OutputDisplayMode.Text != "GPS")
+                 
+
+                    if (IDC_OutputDisplayMode.Text != "GPS")
                      {
                      Thread.Sleep(1);
                      }
@@ -301,7 +306,7 @@ namespace Comport
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
                         Displaydata[i] = data[i];
-
+                   
                    
 
                     DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
