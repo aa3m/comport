@@ -374,7 +374,7 @@
             this.IDC_GPStimebox.Multiline = true;
             this.IDC_GPStimebox.Name = "IDC_GPStimebox";
             this.IDC_GPStimebox.ReadOnly = true;
-            this.IDC_GPStimebox.Size = new System.Drawing.Size(213, 59);
+            this.IDC_GPStimebox.Size = new System.Drawing.Size(228, 59);
             this.IDC_GPStimebox.TabIndex = 16;
             // 
             // IDC_timestampCtrl

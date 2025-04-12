@@ -283,37 +283,62 @@ namespace Comport
 
             if (m_COM.IsOpen == true)
             {
-                while ((m_COM.BytesToRead > 0) && (iLen < 5000))
+                while ((m_COM.BytesToRead > 0) && (iLen < 500))
                 {
                     iTemp = m_COM.ReadByte();
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
-                        break;          //stop receiving and print what's in the buffer
+                        break;          //stop receiving and print what's in the buffer  
                     data[iLen++] = (byte)iTemp;
                      if (IDC_OutputDisplayMode.Text != "GPS")
                      {
                      Thread.Sleep(1);
                      }
+                 
                 }
-
+                
                 if (iLen > 0)
                 {
                     Displaydata = new Byte[iLen];
                     for (int i = 0; i < iLen; i++)
                         Displaydata[i] = data[i];
-                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
+                   
+
+                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+                                       
                     int offset = DisplaydataString.IndexOf("$GNGGA");
-                    IDC_GPStimebox.Text = offset.ToString();
+                    //IDC_GPStimebox.Text = offset.ToString();
                     //IDC_Output.Text = offset.ToString();
+
                     if (offset > 0)
                     {
-                        IDC_Input.Text = DisplaydataString;
+                        
+                        string GPSdataString = DisplaydataString.Substring(8, 6);
+                        //IDC_Input.Text = GPSdataString;   //use input window for testing
+                        IDC_GPStimebox.Text = GPSdataString.ToString();
+
+                    }
+                    
+                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+
+                    int offset2 = DisplaydataString.IndexOf("$GNRMC");
+                    //IDC_GPStimebox.Text = offset.ToString();
+                    //IDC_Output.Text = offset.ToString();
+
+                    if (offset2 > 0)
+                    {
+
+                        string GPSdataString = DisplaydataString.Substring(8, 6);
+                        //IDC_Input.Text = GPSdataString;   //use input window for testing
+                        IDC_GPStimebox.Text = GPSdataString.ToString();
+
                     }
 
                     
-                    SafePrintOutput(Displaydata);
-                    if (IDC_Loop.Checked == true)
-                        SafeSendPacket(Displaydata);
+                        SafePrintOutput(Displaydata);
+                        if (IDC_Loop.Checked == true)
+                            SafeSendPacket(Displaydata);
+                    
                     
                 }
             }
