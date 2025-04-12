@@ -324,6 +324,7 @@ namespace Comport
 
                     }
                     
+                    /*
                     DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
                     int offset2 = DisplaydataString.IndexOf("$GNRMC");
@@ -338,9 +339,11 @@ namespace Comport
                         IDC_GPStimebox.Text = GPSdataString.ToString();
 
                     }
-
+                    */
+                    
                     
                         SafePrintOutput(Displaydata);
+                    
                         if (IDC_Loop.Checked == true)
                             SafeSendPacket(Displaydata);
                     
