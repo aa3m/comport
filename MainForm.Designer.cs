@@ -357,13 +357,15 @@
             // 
             // IDC_tncConnect
             // 
+            this.IDC_tncConnect.BackColor = System.Drawing.Color.DarkRed;
+            this.IDC_tncConnect.ForeColor = System.Drawing.Color.Yellow;
             this.IDC_tncConnect.Location = new System.Drawing.Point(1639, 1415);
             this.IDC_tncConnect.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
             this.IDC_tncConnect.Name = "IDC_tncConnect";
             this.IDC_tncConnect.Size = new System.Drawing.Size(348, 65);
             this.IDC_tncConnect.TabIndex = 23;
             this.IDC_tncConnect.Text = "TNC CONNECT";
-            this.IDC_tncConnect.UseVisualStyleBackColor = true;
+            this.IDC_tncConnect.UseVisualStyleBackColor = false;
             this.IDC_tncConnect.Click += new System.EventHandler(this.IDC_tncConnect_Click);
             // 
             // IDC_GPStimebox

@@ -154,6 +154,7 @@ namespace Comport
         // A similar method with PrintLine used in cross thread
         private void SafeSendPacket(Byte[] Msg)
         {
+
             if (this.InvokeRequired)
             {
                 this.BeginInvoke(new SendPacketDelegate(SendPacket), Msg);
@@ -161,98 +162,98 @@ namespace Comport
         }
         private void PrintSent(Byte[] Msg)
         {
-            if (IDC_InputDisplayMode.Text == "BOTH")
-            {
-                char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
-                string timestring = DateTime.Now.ToString("HH:mm:ss ");
-                int remaining = Msg.Length;
-                int index = 0;
-                IDC_Sent.Text += timestring + "\r\n"; sent_line_count++;
-                
-                while (remaining > 0)
-                {
-                    if (remaining > 16)
-                    {
-                        for (int i = 0; i < 16; i++)
-                        {
-                            IDC_Sent.Text += Msg[i + index].ToString("X2");
-                            IDC_Sent.Text += "|";
-                        }
-                        IDC_Sent.Text += "\r\n"; sent_line_count++;
-                        for (int i = 0; i < 16; i++)
-                        {
-                            if (((int)cMsg[i + index] > 32) && (int)cMsg[i + index] < 127)
-                                IDC_Sent.Text += cMsg[i + index];
-                            else
-                                IDC_Sent.Text += " ";
-                            IDC_Sent.Text += " |";
-                        }
-                        IDC_Sent.Text += "\r\n"; sent_line_count++;
-                        index += 16;
-                        remaining -= 16;
-                    }
-                    else
-                    {
-                        for (int i = 0; i < remaining; i++)
-                        {
-                            IDC_Sent.Text += Msg[i + index].ToString("X2");
-                            IDC_Sent.Text += "|";
-                        }
-                        IDC_Sent.Text += "\r\n"; sent_line_count++;
-                        for (int i = 0; i < remaining; i++)
-                        {
-                            if (((int)cMsg[i + index] > 32) && (int)cMsg[i + index] < 127)
-                                IDC_Sent.Text += cMsg[i+ index];
-                            else
-                                IDC_Sent.Text += " ";
-                            IDC_Sent.Text += " |";
-                        }
-                        IDC_Sent.Text += "\r\n"; sent_line_count++;
-                        remaining = 0;
-                    }
-                }
-                //IDC_Sent.Text += "\r\n";
 
-                IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
-                IDC_Sent.ScrollToCaret();
-            }
-            else if (IDC_InputDisplayMode.Text == "ASCII")
-            {
-                char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
-                string timestring = DateTime.Now.ToString("HH:mm:ss ");
-                IDC_Sent.Text += timestring + "ASCII  \r\n"; sent_line_count++;
-                for (int i = 0; i < Msg.Length; i++)
-                {
-                    if (((int)cMsg[i] > 32) && (int)cMsg[i] < 127)
-                        IDC_Sent.Text += cMsg[i];
-                    else
-                        IDC_Sent.Text += " ";
-                }
-                IDC_Sent.Text += "\r\n"; sent_line_count++;
-                IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
-                IDC_Sent.ScrollToCaret();
-            }
-            else if (IDC_InputDisplayMode.Text == "HEX")
-            {
-                string timestring = DateTime.Now.ToString("HH:mm:ss ");
-                IDC_Sent.Text += timestring + "HEX    \r\n"; sent_line_count++;
-                for (int i = 0; i < Msg.Length; i++)
-                {
-                    IDC_Sent.Text += Msg[i].ToString("X2");
-                    //IDC_Sent.Text += "|";
-                }
-                IDC_Sent.Text += "\r\n"; sent_line_count++;
+                if (IDC_InputDisplayMode.Text == "BOTH")
+                { char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
+                    string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                    int remaining = Msg.Length;
+                    int index = 0;
+                    IDC_Sent.Text += timestring + "\r\n"; sent_line_count++;
 
-                IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
-                IDC_Sent.ScrollToCaret();
-            }
-            else if (IDC_InputDisplayMode.Text == "NONE")
-            {
-                string timestring = DateTime.Now.ToString("HH:mm:ss ");
-                IDC_Sent.Text += timestring + "SENT    \r\n"; sent_line_count++;
-                IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
-                IDC_Sent.ScrollToCaret();
-            }
+                    while (remaining > 0)
+                    {
+                        if (remaining > 16)
+                        {
+                            for (int i = 0; i < 16; i++)
+                            {
+                                IDC_Sent.Text += Msg[i + index].ToString("X2");
+                                IDC_Sent.Text += "|";
+                            }
+                            IDC_Sent.Text += "\r\n"; sent_line_count++;
+                            for (int i = 0; i < 16; i++)
+                            {
+                                if (((int)cMsg[i + index] > 32) && (int)cMsg[i + index] < 127)
+                                    IDC_Sent.Text += cMsg[i + index];
+                                else
+                                    IDC_Sent.Text += " ";
+                                IDC_Sent.Text += " |";
+                            }
+                            IDC_Sent.Text += "\r\n"; sent_line_count++;
+                            index += 16;
+                            remaining -= 16;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < remaining; i++)
+                            {
+                                IDC_Sent.Text += Msg[i + index].ToString("X2");
+                                IDC_Sent.Text += "|";
+                            }
+                            IDC_Sent.Text += "\r\n"; sent_line_count++;
+                            for (int i = 0; i < remaining; i++)
+                            {
+                                if (((int)cMsg[i + index] > 32) && (int)cMsg[i + index] < 127)
+                                    IDC_Sent.Text += cMsg[i + index];
+                                else
+                                    IDC_Sent.Text += " ";
+                                IDC_Sent.Text += " |";
+                            }
+                            IDC_Sent.Text += "\r\n"; sent_line_count++;
+                            remaining = 0;
+                        }
+                    }
+                    //IDC_Sent.Text += "\r\n";
+
+                    IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
+                    IDC_Sent.ScrollToCaret();
+                }
+                else if (IDC_InputDisplayMode.Text == "ASCII")
+                {
+                    char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
+                    string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                    IDC_Sent.Text += timestring + "ASCII  \r\n"; sent_line_count++;
+                    for (int i = 0; i < Msg.Length; i++)
+                    {
+                        if (((int)cMsg[i] > 32) && (int)cMsg[i] < 127)
+                            IDC_Sent.Text += cMsg[i];
+                        else
+                            IDC_Sent.Text += " ";
+                    }
+                    IDC_Sent.Text += "\r\n"; sent_line_count++;
+                    IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
+                    IDC_Sent.ScrollToCaret();
+                }
+                else if (IDC_InputDisplayMode.Text == "HEX")
+                {
+                    string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                    IDC_Sent.Text += timestring + "HEX    \r\n"; sent_line_count++;
+                    for (int i = 0; i < Msg.Length; i++)
+                    {
+                        IDC_Sent.Text += Msg[i].ToString("X2");
+                        //IDC_Sent.Text += "|";
+                    }
+                    IDC_Sent.Text += "\r\n"; sent_line_count++;
+
+                    IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
+                    IDC_Sent.ScrollToCaret();
+                }
+                else if (IDC_InputDisplayMode.Text == "NONE")
+                {
+                    string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                    IDC_Sent.Text += timestring + "SENT    \r\n"; sent_line_count++;
+                    IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
+                    IDC_Sent.ScrollToCaret();
+                }
             if (sent_line_count > Max_line)
             {
                 int i;
@@ -268,7 +269,7 @@ namespace Comport
                 IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
                 IDC_Sent.ScrollToCaret();
             }
-            
+       
         }
         private void RecePacket()
         {
@@ -287,68 +288,79 @@ namespace Comport
             if (m_COM.IsOpen == true)
             {
                 while ((m_COM.BytesToRead > 0) && (iLen < 500))
+
+
                 {
                     iTemp = m_COM.ReadByte();
                     if (iTemp == '\r') // check for carriage return at end of GPS data 4/4/25 AA3M
                         break;          //stop receiving and print what's in the buffer  
                     data[iLen++] = (byte)iTemp;
-                 
+
+                    //IDC_Input.Text = iLen.ToString();   //use input window for testing
+
 
                     if (IDC_OutputDisplayMode.Text != "GPS")
-                     {
-                     Thread.Sleep(1);
-                     }
-                 
-                }
-                
-                if (iLen > 0)
-                {
-                    Displaydata = new Byte[iLen];
-                    for (int i = 0; i < iLen; i++)
-                        Displaydata[i] = data[i];
-                   
-                   
-
-                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
-                                       
-                    int offset = DisplaydataString.IndexOf("$GNGGA");
-                    //IDC_GPStimebox.Text = offset.ToString();
-                    //IDC_Output.Text = offset.ToString();
-
-                    if (offset > 0)
                     {
-                        
-                        string GPSdataString = DisplaydataString.Substring(8, 6);
-                        //IDC_Input.Text = GPSdataString;   //use input window for testing
-                        IDC_GPStimebox.Text = GPSdataString.ToString();
+                        Thread.Sleep(1);
+                    }
 
                     }
-                    
-                    /*
-                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
-                    int offset2 = DisplaydataString.IndexOf("$GNRMC");
-                    //IDC_GPStimebox.Text = offset.ToString();
-                    //IDC_Output.Text = offset.ToString();
 
-                    if (offset2 > 0)
+
+                    if (iLen > 0)
                     {
 
-                        string GPSdataString = DisplaydataString.Substring(8, 6);
-                        //IDC_Input.Text = GPSdataString;   //use input window for testing
-                        IDC_GPStimebox.Text = GPSdataString.ToString();
+                        Displaydata = new Byte[iLen];
+                        for (int i = 0; i < iLen; i++)
+                            Displaydata[i] = data[i];
 
-                    }
-                    */
-                    
-                    
+
+
+
+
+                        DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+
+                        int offset = DisplaydataString.IndexOf("$GNGGA");
+                        //IDC_GPStimebox.Text = offset.ToString();
+                        //IDC_Output.Text = offset.ToString();
+
+                        if (offset > 0)
+                        {
+
+                            string GPSdataString = DisplaydataString.Substring(8, 6);
+                            //IDC_Input.Text = GPSdataString;   //use input window for testing
+                            IDC_GPStimebox.Text = GPSdataString.ToString();
+
+                        }
+
+                        /*
+                        DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+
+                        int offset2 = DisplaydataString.IndexOf("$GNRMC");
+                        //IDC_GPStimebox.Text = offset.ToString();
+                        //IDC_Output.Text = offset.ToString();
+
+                        if (offset2 > 0)
+                        {
+
+                            string GPSdataString = DisplaydataString.Substring(8, 6);
+                            //IDC_Input.Text = GPSdataString;   //use input window for testing
+                            IDC_GPStimebox.Text = GPSdataString.ToString();
+
+                        }
+                        */
+
+
+
                         SafePrintOutput(Displaydata);
-                    
+
                         if (IDC_Loop.Checked == true)
                             SafeSendPacket(Displaydata);
                     
-                    
-                }
+
+                } //end of if (iLen > 0)
+                
             }
         }
 
@@ -576,8 +588,9 @@ namespace Comport
             sent_line_count = 0;    //aa3m 3/31/25 reset the outbound window for the next test packet
 
 
-            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK";
-           
+            IDC_Input.Text += "THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS BACK\n\r";
+            IDC_Input.Text += "0123456789";
+
 
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
             {
