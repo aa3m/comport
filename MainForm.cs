@@ -301,7 +301,8 @@ namespace Comport
 
                     if (IDC_OutputDisplayMode.Text != "GPS")
                     {
-                        Thread.Sleep(1);
+                        Thread.Sleep(10
+                            );
                     }
 
                     }
@@ -321,16 +322,18 @@ namespace Comport
 
                         DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
-                        int offset = DisplaydataString.IndexOf("$GNGGA");
-                        //IDC_GPStimebox.Text = offset.ToString();
-                        //IDC_Output.Text = offset.ToString();
+                        //int offset = DisplaydataString.IndexOf("$GNGGA");
+                    int offset = DisplaydataString.IndexOf("$GPRMC");
+                    //IDC_GPStimebox.Text = offset.ToString();
+                    //IDC_Output.Text = offset.ToString();
 
-                        if (offset > 0)
+                    if (offset > 0)
                         {
-
+                         // this is where we extract the GPS time from the GPRMC string
                             string GPSdataString = DisplaydataString.Substring(8, 6);
-                            //IDC_Input.Text = GPSdataString;   //use input window for testing
-                            IDC_GPStimebox.Text = GPSdataString.ToString();
+                        //string GPSdataString = GPSdataString.Now.ToString("HH:mm:ss ");
+                        // IDC_Input.Text = GPSdataString;   //use input window for testing
+                        IDC_GPStimebox.Text = GPSdataString.ToString();
 
                         }
 
