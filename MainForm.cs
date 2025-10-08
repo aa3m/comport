@@ -11,6 +11,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Comport
 {
@@ -39,6 +40,7 @@ namespace Comport
             IDC_PortName.SelectedIndex = 0;
             IDC_BaudRate.SelectedIndex = 0;
             IDC_type.SelectedIndex = 1; // choose ASCII as default AA3M 3/30/25
+            //IDC_type.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
             IDC_OutputDisplayMode.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
             IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
             IDC_GPStimebox.Text = "GPS Time";
@@ -114,8 +116,8 @@ namespace Comport
             try { m_COM.Open(); return true; }
             //                catch { continue; }
             catch {
-                IDC_Output.Text = "Fail to open port";
-                return false; }
+               IDC_Output.Text = "Fail to open port";
+                 return false; }
         }
 
         private String convertAsciiTextToHex(String i_asciiText)
@@ -280,7 +282,7 @@ namespace Comport
 
             iLen = 0;
             data = new Byte[5000];
-            Displaydata = new Byte[5000];  //works without this line but not sure why
+           Displaydata = new Byte[5000];  //works without this line but not sure why
 
             string GPSdata;
             string DisplaydataString;
@@ -301,8 +303,7 @@ namespace Comport
 
                     if (IDC_OutputDisplayMode.Text != "GPS")
                     {
-                        Thread.Sleep(10
-                            );
+                        Thread.Sleep(1);
                     }
 
                     }
@@ -319,7 +320,6 @@ namespace Comport
 
 
 
-
                         DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
                         //int offset = DisplaydataString.IndexOf("$GNGGA");
@@ -332,10 +332,13 @@ namespace Comport
                          // this is where we extract the GPS time from the GPRMC string
                             string GPSdataString = DisplaydataString.Substring(8, 6);
                         //string GPSdataString = GPSdataString.Now.ToString("HH:mm:ss ");
-                        // IDC_Input.Text = GPSdataString;   //use input window for testing
+                        //IDC_Input.Text = GPSdataString.Now.ToString("HH:mm:ss ");   //use input window for testing
+                        IDC_Input.Text = GPSdataString.Now.ToString("HH:mm:ss ");   //use input window for testing
                         IDC_GPStimebox.Text = GPSdataString.ToString();
+                        //IDC_GPStimebox.Text = DisplaydataString.ToString();
+                        
 
-                        }
+                    }
 
                         /*
                         DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
@@ -353,6 +356,7 @@ namespace Comport
 
                         }
                         */
+
 
 
 
