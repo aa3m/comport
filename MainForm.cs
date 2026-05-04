@@ -358,28 +358,77 @@ if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have
         IDC_GPStimebox.Text = timeField;
     }
 }
+                //sat status
+                    if (offset >= 0 && DisplaydataString.Length >= offset + 17 + 1) // ensure we have 6 chars for time
+                    {
+                        // time field in RMC starts immediately after "$GPRMC," (7 chars)
+                        string satGoodField = DisplaydataString.Substring(offset + 17, 1); // hhmmss
 
-                        /*
-                        DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+                        //IDC_Input.Text = satGoodField;   //use input window for testing
 
-                        int offset2 = DisplaydataString.IndexOf("$GNRMC");
-                        //IDC_GPStimebox.Text = offset.ToString();
-                        //IDC_Output.Text = offset.ToString();
-
-                        if (offset2 > 0)
+                        if (satGoodField == "A")
                         {
-
-                            string GPSdataString = DisplaydataString.Substring(8, 6);
-                            //IDC_Input.Text = GPSdataString;   //use input window for testing
-                            IDC_GPStimebox.Text = GPSdataString.ToString();
-
+                            //IDC_Input.Text = "GPS time good";
                         }
-                        */
+                        else if (satGoodField == "V")
+                        {
+                            IDC_GPStimebox.Text = "No time";
+                            IDC_Input.Text = "             ";
+                        }
+                        //else
+                        //{
+                        //    IDC_GPStimebox.Text = "Unknown GPS Status";
+                        //}                       
+
+
+                    }
+
+
+
+                    if (offset >= 0 && DisplaydataString.Length >= offset + 53 + 6) // ensure we have 6 chars for time
+                    {
+                        // time field in RMC starts immediately after "$GPRMC," (7 chars)
+                        string dateField = DisplaydataString.Substring(offset + 53, 6); // hhmmss
+
+                        DateTime gpsTime;
+                        if (DateTime.TryParseExact(dateField, "ddmmyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out gpsTime))
+                        {
+                            IDC_Input.Text = gpsTime.ToString("mm/dd/yyyy");      // formatted time for testing in input window
+
+                            //IDC_GPStimebox.Text = gpsTime.ToString("HH:mm:ss");
+                        }
+                        else
+                        {
+                            // fallback: show raw time field when parse fails
+                            //IDC_GPStimebox.Text = timeField;
+                        }
+                    }
 
 
 
 
-                        SafePrintOutput(Displaydata);
+
+                    /*
+                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+
+                    int offset2 = DisplaydataString.IndexOf("$GNRMC");
+                    //IDC_GPStimebox.Text = offset.ToString();
+                    //IDC_Output.Text = offset.ToString();
+
+                    if (offset2 > 0)
+                    {
+
+                        string GPSdataString = DisplaydataString.Substring(8, 6);
+                        //IDC_Input.Text = GPSdataString;   //use input window for testing
+                        IDC_GPStimebox.Text = GPSdataString.ToString();
+
+                    }
+                    */
+
+
+
+
+                    SafePrintOutput(Displaydata);
 
                         if (IDC_Loop.Checked == true)
                             SafeSendPacket(Displaydata);
