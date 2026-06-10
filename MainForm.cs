@@ -11,6 +11,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Comport
 {
@@ -20,8 +21,21 @@ namespace Comport
         Boolean threadrunning = true;
         static int Output_line_count = 0;
         static int sent_line_count = 0;
-        const int Max_line = 50;   
-     
+        const int Max_line = 50;
+
+        public struct SystemTime        //structure capable of holding pc system time. Not in use in this program but may be useful for future development to compare pc system time to gps time from the GPS module. AA3M 5/4/2026
+        {
+            public ushort Year;
+            public ushort Month;
+            public ushort DayOfWeek;
+            public ushort Day;
+            public ushort Hour;
+            public ushort Minute;
+            public ushort Second;
+            public ushort Millisecond;
+        };
+
+
         public MainForm()
         {
             String[] sPort;
@@ -38,9 +52,11 @@ namespace Comport
                 IDC_PortName.Items.Add(tmp);
             IDC_PortName.SelectedIndex = 0;
             IDC_BaudRate.SelectedIndex = 0;
-            IDC_type.SelectedIndex = 1; // choose ASCII as default AA3M 3/30/25
-            IDC_OutputDisplayMode.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
-            IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII as default AA3M 3/30/25
+            //IDC_type.SelectedIndex = 1; // choose ASCII (1) as default AA3M 3/30/25
+            IDC_type.SelectedIndex = 1; // choose ASCII (1) as default AA3M 3/30/25
+            //IDC_type.SelectedIndex = 4; // choose ASCII as default AA3M 3/30/25
+            IDC_OutputDisplayMode.SelectedIndex = 3; // choose ASCII (4) as default AA3M 3/30/25
+            IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII (3) as default AA3M 3/30/25
             IDC_GPStimebox.Text = "GPS Time";
             IDC_timestampCtrl.SelectedIndex = 1; // Default "ON"  0 = OFF, 1 = ON
         }
@@ -102,7 +118,8 @@ namespace Comport
         private Boolean SearchForDevice(String portName)
         {
             // set serial port
- //           m_COM.BaudRate = 9600;
+            //m_COM.BaudRate = 9600;
+            //m_COM.BaudRate = Convert.ToInt32(IDC_BaudRate.Text);
             m_COM.BaudRate = Convert.ToInt32(IDC_BaudRate.Text);
             m_COM.DataBits = 8;
             m_COM.Handshake = Handshake.None;
@@ -114,8 +131,8 @@ namespace Comport
             try { m_COM.Open(); return true; }
             //                catch { continue; }
             catch {
-                IDC_Output.Text = "Fail to open port";
-                return false; }
+               IDC_Output.Text = "Fail to open port";
+                 return false; }
         }
 
         private String convertAsciiTextToHex(String i_asciiText)
@@ -280,7 +297,7 @@ namespace Comport
 
             iLen = 0;
             data = new Byte[5000];
-            Displaydata = new Byte[5000];  //works without this line but not sure why
+           Displaydata = new Byte[5000];  //works without this line but not sure why
 
             string GPSdata;
             string DisplaydataString;
@@ -301,8 +318,7 @@ namespace Comport
 
                     if (IDC_OutputDisplayMode.Text != "GPS")
                     {
-                        Thread.Sleep(10
-                            );
+                        Thread.Sleep(1);
                     }
 
                     }
@@ -319,51 +335,108 @@ namespace Comport
 
 
 
-
                         DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
                         //int offset = DisplaydataString.IndexOf("$GNGGA");
                     int offset = DisplaydataString.IndexOf("$GPRMC");
+
+if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have 6 chars for time
+{
+    // time field in RMC starts immediately after "$GPRMC," (7 chars)
+    string timeField = DisplaydataString.Substring(offset + 7, 6); // hhmmss
+
+    DateTime gpsTime;
+    if (DateTime.TryParseExact(timeField, "HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None, out gpsTime))
+    {
+                            //IDC_Input.Text = gpsTime.ToString("HH:mm:ss");      // formatted time for testing in input window
+
+                            IDC_GPStimebox.Text = gpsTime.ToString("HH:mm:ss");
+    }
+    else
+    {
+        // fallback: show raw time field when parse fails
+        IDC_GPStimebox.Text = timeField;
+    }
+}
+                //sat status
+                    if (offset >= 0 && DisplaydataString.Length >= offset + 17 + 1) // ensure we have 6 chars for time
+                    {
+                        // time field in RMC starts immediately after "$GPRMC," (7 chars)
+                        string satGoodField = DisplaydataString.Substring(offset + 17, 1); // hhmmss
+
+                        //IDC_Input.Text = satGoodField;   //use input window for testing
+
+                        if (satGoodField == "A")
+                        {
+                            //IDC_Input.Text = "GPS time good";
+                        }
+                        else if (satGoodField == "V")
+                        {
+                            IDC_GPStimebox.Text = "No time";
+                            IDC_Input.Text = "             ";
+                        }
+                        //else
+                        //{
+                        //    IDC_GPStimebox.Text = "Unknown GPS Status";
+                        //}                       
+
+
+                    }
+
+
+
+                    if (offset >= 0 && DisplaydataString.Length >= offset + 53 + 6) // ensure we have 6 chars for time
+                    {
+                        // time field in RMC starts immediately after "$GPRMC," (7 chars)
+                        string dateField = DisplaydataString.Substring(offset + 53, 6); // hhmmss
+
+                        DateTime gpsTime;
+                        if (DateTime.TryParseExact(dateField, "ddmmyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out gpsTime))
+                        {
+                            IDC_Input.Text = gpsTime.ToString("mm/dd/yyyy");      // formatted time for testing in input window
+
+                            //IDC_GPStimebox.Text = gpsTime.ToString("HH:mm:ss");
+                        }
+                        else
+                        {
+                            // fallback: show raw time field when parse fails
+                            //IDC_GPStimebox.Text = timeField;
+                        }
+                    }
+
+
+
+
+
+                    /*
+                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
+
+                    int offset2 = DisplaydataString.IndexOf("$GNRMC");
                     //IDC_GPStimebox.Text = offset.ToString();
                     //IDC_Output.Text = offset.ToString();
 
-                    if (offset > 0)
-                        {
-                         // this is where we extract the GPS time from the GPRMC string
-                            string GPSdataString = DisplaydataString.Substring(8, 6);
-                        //string GPSdataString = GPSdataString.Now.ToString("HH:mm:ss ");
-                        // IDC_Input.Text = GPSdataString;   //use input window for testing
+                    if (offset2 > 0)
+                    {
+
+                        string GPSdataString = DisplaydataString.Substring(8, 6);
+                        //IDC_Input.Text = GPSdataString;   //use input window for testing
                         IDC_GPStimebox.Text = GPSdataString.ToString();
 
-                        }
-
-                        /*
-                        DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
-
-                        int offset2 = DisplaydataString.IndexOf("$GNRMC");
-                        //IDC_GPStimebox.Text = offset.ToString();
-                        //IDC_Output.Text = offset.ToString();
-
-                        if (offset2 > 0)
-                        {
-
-                            string GPSdataString = DisplaydataString.Substring(8, 6);
-                            //IDC_Input.Text = GPSdataString;   //use input window for testing
-                            IDC_GPStimebox.Text = GPSdataString.ToString();
-
-                        }
-                        */
+                    }
+                    */
 
 
 
-                        SafePrintOutput(Displaydata);
+
+                    SafePrintOutput(Displaydata);
 
                         if (IDC_Loop.Checked == true)
                             SafeSendPacket(Displaydata);
-                    
 
+                    
+                    //iLen = 0;  didn't need to reset iLen here since we create a new Displaydata array each time we receive data, but if we wanted to reuse the same array we would need to reset iLen to 0 here to avoid appending new data to old data in the array.
                 } //end of if (iLen > 0)
-                
+
             }
         }
 
@@ -475,13 +548,16 @@ namespace Comport
             {
                 char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
                 string timestring = DateTime.Now.ToString("HH:mm:ss ");
+                /*
                 if (IDC_timestampCtrl.Text == "ON")  // Ensure timestamp is ON when displaying ASCII
                 {
                     IDC_Output.Text += timestring + "ASCII  \r\n"; Output_line_count++;
                 }
+                */
                 for (int i = 0; i < Msg.Length; i++)
                 {
                     if (((int)cMsg[i] > 32) && (int)cMsg[i] < 127)
+                        //IDC_Output.Text += cMsg[i];
                         IDC_Output.Text += cMsg[i];
                     else
                         IDC_Output.Text += " ";
@@ -490,6 +566,7 @@ namespace Comport
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
                 //IDC_GPStimebox.Text = timestring;
+                
             }
             else if (IDC_OutputDisplayMode.Text == "NONE")
             {
