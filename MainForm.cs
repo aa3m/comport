@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Comport
 {
@@ -23,7 +24,10 @@ namespace Comport
         static int Output_line_count = 0;
         static int sent_line_count = 0;
         const int Max_line = 50;
-     
+
+        // store last parsed RMC sentence so UI button can use it
+        private string lastRmcSentence = "";
+
         public struct SystemTime        //structure capable of holding pc system time. Not in use in this program but may be useful for future development to compare pc system time to gps time from the GPS module. AA3M 5/4/2026
         {
             public ushort Year;
@@ -36,6 +40,8 @@ namespace Comport
             public ushort Millisecond;
         };
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetSystemTime(ref SystemTime st); // expects UTC
 
         public MainForm()
         {
@@ -45,7 +51,6 @@ namespace Comport
 
             IDC_Input.Text = "";
 
-          
 
             m_COM = new SerialPort();
 
@@ -91,7 +96,7 @@ namespace Comport
 
         private void IDC_Send_Click(object sender, EventArgs e)
         {
-          
+
             // search device
             if ((IDC_Connect.Text == "Disconnect") && (IDC_Input.Text != ""))
             {
@@ -131,9 +136,9 @@ namespace Comport
                 else if ((caTemp[i] >= 'a') & (caTemp[i] <= 'f'))
                     baTemp[j++] = (Byte)(caTemp[i] - 'a' + 10);
             }
-            if ((j % 2) == 1)            
+            if ((j % 2) == 1)
                 j--;
-            if(j == 0)
+            if (j == 0)
                 return false;
 
             bOutput = new Byte[j / 2];
@@ -314,7 +319,7 @@ namespace Comport
                 IDC_Sent.SelectionStart = IDC_Sent.Text.Length;
                 IDC_Sent.ScrollToCaret();
             }
-       
+
         }
         private void RecePacket()
         {
@@ -352,7 +357,6 @@ namespace Comport
                     }
 
 
-
                     if (iLen > 0)
                     {
 
@@ -362,104 +366,76 @@ namespace Comport
 
 
 
-
                         DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
 
                         //int offset = DisplaydataString.IndexOf("$GNGGA");
                     int offset = DisplaydataString.IndexOf("$GPRMC");
 
-if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have 6 chars for time
+if (offset >= 0)
 {
-    // time field in RMC starts immediately after "$GPRMC," (7 chars)
-    string timeField = DisplaydataString.Substring(offset + 7, 6); // hhmmss
+    // extract up to end of line
+    int endIdx = DisplaydataString.IndexOf('\n', offset);
+    if (endIdx < 0) endIdx = DisplaydataString.IndexOf('\r', offset);
+    if (endIdx < 0) endIdx = DisplaydataString.Length;
+    string rmc = DisplaydataString.Substring(offset, endIdx - offset);
+    lastRmcSentence = rmc;
 
-    DateTime gpsTime;
-    if (DateTime.TryParseExact(timeField, "HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None, out gpsTime))
+    // split and parse fields per NMEA RMC
+    string[] fields = rmc.Split(',');
+    if (fields.Length > 1)
     {
-                            //IDC_Input.Text = gpsTime.ToString("HH:mm:ss");      // formatted time for testing in input window
+        string timeField = fields[1]; // hhmmss[.sss]
+        string statusField = fields.Length > 2 ? fields[2] : "";
+        string dateField = fields.Length > 9 ? fields[9] : "";
 
-                            IDC_GPStimebox.Text = gpsTime.ToString("HH:mm:ss");
-    }
-    else
-    {
-        // fallback: show raw time field when parse fails
-        IDC_GPStimebox.Text = timeField;
+        // parse time (take first 6 digits)
+        if (!string.IsNullOrEmpty(timeField) && timeField.Length >= 6)
+        {
+            string hhmmss = timeField.Substring(0, 6);
+            DateTime gpsTime;
+            if (DateTime.TryParseExact(hhmmss, "HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None, out gpsTime))
+            {
+                IDC_GPStimebox.Text = gpsTime.ToString("HH:mm:ss");
+            }
+            else
+            {
+                IDC_GPStimebox.Text = hhmmss;
+            }
+        }
+
+        // use status field for validity
+        if (statusField == "A")
+        {
+            // valid
+        }
+        else if (statusField == "V")
+        {
+            IDC_GPStimebox.Text = "No time";
+            IDC_Input.Text = "             ";
+        }
+
+        // parse date field ddmmyy
+        if (!string.IsNullOrEmpty(dateField) && dateField.Length == 6 && !string.IsNullOrEmpty(timeField) && timeField.Length >= 6)
+        {
+            string combined = dateField + timeField.Substring(0, 6); // ddmmyyhhmmss
+            DateTime gpsDateTimeUtc;
+            if (DateTime.TryParseExact(combined, "ddMMyyHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out gpsDateTimeUtc))
+            {
+                // display date in input for testing (original behavior)
+                IDC_Input.Text = gpsDateTimeUtc.ToString("MM/dd/yyyy");
+            }
+        }
     }
 }
                 //sat status
-                    if (offset >= 0 && DisplaydataString.Length >= offset + 17 + 1) // ensure we have 6 chars for time
-                    {
-                        // time field in RMC starts immediately after "$GPRMC," (7 chars)
-                        string satGoodField = DisplaydataString.Substring(offset + 17, 1); // hhmmss
-
-                        //IDC_Input.Text = satGoodField;   //use input window for testing
-
-                        if (satGoodField == "A")
-                        {
-                            //IDC_Input.Text = "GPS time good";
-                        }
-                        else if (satGoodField == "V")
-                        {
-                            IDC_GPStimebox.Text = "No time";
-                            IDC_Input.Text = "             ";
-                        }
-                        //else
-                        //{
-                        //    IDC_GPStimebox.Text = "Unknown GPS Status";
-                        //}                       
-
-
-                    }
-
-
-
-                    if (offset >= 0 && DisplaydataString.Length >= offset + 53 + 6) // ensure we have 6 chars for time
-                    {
-                        // time field in RMC starts immediately after "$GPRMC," (7 chars)
-                        string dateField = DisplaydataString.Substring(offset + 53, 6); // hhmmss
-
-                        DateTime gpsTime;
-                        if (DateTime.TryParseExact(dateField, "ddmmyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out gpsTime))
-                        {
-                            IDC_Input.Text = gpsTime.ToString("mm/dd/yyyy");      // formatted time for testing in input window
-
-                            //IDC_GPStimebox.Text = gpsTime.ToString("HH:mm:ss");
-                        }
-                        else
-                        {
-                            // fallback: show raw time field when parse fails
-                            //IDC_GPStimebox.Text = timeField;
-                        }
-                    }
-
-
-
-
-
-                    /*
-                    DisplaydataString = System.Text.Encoding.ASCII.GetString(Displaydata);
-
-                    int offset2 = DisplaydataString.IndexOf("$GNRMC");
-                    //IDC_GPStimebox.Text = offset.ToString();
-                    //IDC_Output.Text = offset.ToString();
-
-                    if (offset2 > 0)
-                    {
-
-                        string GPSdataString = DisplaydataString.Substring(8, 6);
-                        //IDC_Input.Text = GPSdataString;   //use input window for testing
-                        IDC_GPStimebox.Text = GPSdataString.ToString();
-
-                    }
-                    */
-
-
+                    // removed fixed-offset parsing in favor of token parsing above
 
 
                     SafePrintOutput(Displaydata);
 
                         if (IDC_Loop.Checked == true)
                             SafeSendPacket(Displaydata);
+
 
                     
                     //iLen = 0;  didn't need to reset iLen here since we create a new Displaydata array each time we receive data, but if we wanted to reuse the same array we would need to reset iLen to 0 here to avoid appending new data to old data in the array.
@@ -476,7 +452,7 @@ if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have
                 if (threadrunning == false)
                     break;
             }
-            
+
         }
 
         private void PrintOutput(Byte[] Msg)
@@ -537,10 +513,10 @@ if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have
             }
             else if (IDC_OutputDisplayMode.Text == "ASCII")
             {
-               
+
                     char[] cMsg = ASCIIEncoding.ASCII.GetString(Msg).ToCharArray();
 
-               
+
                     string timestring = DateTime.Now.ToString("HH:mm:ss ");
                 if (IDC_timestampCtrl.Text == "ON")  // Ensure timestamp is ON when displaying ASCII
                 {
@@ -594,7 +570,7 @@ if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have
                 IDC_Output.SelectionStart = IDC_Output.Text.Length;
                 IDC_Output.ScrollToCaret();
                 //IDC_GPStimebox.Text = timestring;
-                
+
             }
             else if (IDC_OutputDisplayMode.Text == "NONE")
             {
@@ -744,6 +720,68 @@ if (offset >= 0 && DisplaydataString.Length >= offset + 7 + 6) // ensure we have
             }
 
 
+        }
+
+        // New: set PC time from last RMC sentence (requires admin privileges)
+        private void IDC_SetPCFromGPS_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(lastRmcSentence))
+            {
+                MessageBox.Show("No GPRMC data available.", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string[] fields = lastRmcSentence.Split(',');
+            if (fields.Length < 10)
+            {
+                MessageBox.Show("Incomplete GPRMC data.", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string timeField = fields[1]; // hhmmss[.sss]
+            string statusField = fields[2];
+            string dateField = fields[9]; // ddmmyy
+
+            if (statusField != "A")
+            {
+                MessageBox.Show("GPS fix not valid. Will not set PC time.", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(timeField) || timeField.Length < 6 || string.IsNullOrEmpty(dateField) || dateField.Length != 6)
+            {
+                MessageBox.Show("Invalid date/time fields in GPRMC.", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string combined = dateField + timeField.Substring(0, 6); // ddmmyyHHmmss
+            DateTime gpsUtc;
+            if (!DateTime.TryParseExact(combined, "ddMMyyHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out gpsUtc))
+            {
+                MessageBox.Show("Failed to parse GPS date/time.", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            SystemTime st = new SystemTime();
+            st.Year = (ushort)gpsUtc.Year;
+            st.Month = (ushort)gpsUtc.Month;
+            st.Day = (ushort)gpsUtc.Day;
+            st.Hour = (ushort)gpsUtc.Hour;
+            st.Minute = (ushort)gpsUtc.Minute;
+            st.Second = (ushort)gpsUtc.Second;
+            st.Millisecond = (ushort)gpsUtc.Millisecond;
+            st.DayOfWeek = (ushort)gpsUtc.DayOfWeek;
+
+            bool result = SetSystemTime(ref st); // SetSystemTime expects UTC
+            if (!result)
+            {
+                int err = Marshal.GetLastWin32Error();
+                MessageBox.Show("Failed to set system time. Error: " + err.ToString() + "\nRun the application as administrator.", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("System time updated from GPS (UTC).", "Set PC Time", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
 

@@ -59,6 +59,7 @@
             this.IDC_timestampCtrl = new System.Windows.Forms.ComboBox();
             this.Timestamp = new System.Windows.Forms.Label();
             this.IDC_LaunchExeButton = new System.Windows.Forms.Button();
+            this.IDC_SetPCFromGPS = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -405,7 +406,7 @@
             // 
             // IDC_LaunchExeButton
             // 
-            this.IDC_LaunchExeButton.Location = new System.Drawing.Point(1675, 1509);
+            this.IDC_LaunchExeButton.Location = new System.Drawing.Point(1875, 1555);
             this.IDC_LaunchExeButton.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
             this.IDC_LaunchExeButton.Name = "IDC_LaunchExeButton";
             this.IDC_LaunchExeButton.Size = new System.Drawing.Size(274, 73);
@@ -414,12 +415,24 @@
             this.IDC_LaunchExeButton.UseVisualStyleBackColor = true;
             this.IDC_LaunchExeButton.Click += new System.EventHandler(this.IDC_LaunchExeButton_Click);
             // 
+            // IDC_SetPCFromGPS
+            // 
+            this.IDC_SetPCFromGPS.Location = new System.Drawing.Point(1592, 1558);
+            this.IDC_SetPCFromGPS.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
+            this.IDC_SetPCFromGPS.Name = "IDC_SetPCFromGPS";
+            this.IDC_SetPCFromGPS.Size = new System.Drawing.Size(263, 76);
+            this.IDC_SetPCFromGPS.TabIndex = 26;
+            this.IDC_SetPCFromGPS.Text = "Set PC Time";
+            this.IDC_SetPCFromGPS.UseVisualStyleBackColor = true;
+            this.IDC_SetPCFromGPS.Click += new System.EventHandler(this.IDC_SetPCFromGPS_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(2506, 1666);
+            this.Controls.Add(this.IDC_SetPCFromGPS);
             this.Controls.Add(this.IDC_LaunchExeButton);
             this.Controls.Add(this.Timestamp);
             this.Controls.Add(this.IDC_timestampCtrl);
@@ -490,6 +503,7 @@
         private System.Windows.Forms.Button IDC_LaunchExeButton;
         private System.Windows.Forms.Label Timestamp;
         private System.Windows.Forms.ComboBox IDC_timestampCtrl;
+        private System.Windows.Forms.Button IDC_SetPCFromGPS;
     }
 }
 
