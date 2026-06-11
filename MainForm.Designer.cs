@@ -58,6 +58,7 @@
             this.IDC_GPStimebox = new System.Windows.Forms.TextBox();
             this.IDC_timestampCtrl = new System.Windows.Forms.ComboBox();
             this.Timestamp = new System.Windows.Forms.Label();
+            this.IDC_LaunchExeButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -201,10 +202,10 @@
             // 
             // IDC_Clear
             // 
-            this.IDC_Clear.Location = new System.Drawing.Point(2299, 1594);
+            this.IDC_Clear.Location = new System.Drawing.Point(2299, 1566);
             this.IDC_Clear.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
             this.IDC_Clear.Name = "IDC_Clear";
-            this.IDC_Clear.Size = new System.Drawing.Size(238, 74);
+            this.IDC_Clear.Size = new System.Drawing.Size(226, 61);
             this.IDC_Clear.TabIndex = 10;
             this.IDC_Clear.Text = "Clear";
             this.IDC_Clear.UseVisualStyleBackColor = true;
@@ -346,7 +347,7 @@
             // 
             // IDC_test
             // 
-            this.IDC_test.Location = new System.Drawing.Point(1308, 1577);
+            this.IDC_test.Location = new System.Drawing.Point(1308, 1562);
             this.IDC_test.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
             this.IDC_test.Name = "IDC_test";
             this.IDC_test.Size = new System.Drawing.Size(238, 65);
@@ -402,12 +403,24 @@
             this.Timestamp.TabIndex = 18;
             this.Timestamp.Text = "Timestamp";
             // 
+            // IDC_LaunchExeButton
+            // 
+            this.IDC_LaunchExeButton.Location = new System.Drawing.Point(1675, 1509);
+            this.IDC_LaunchExeButton.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
+            this.IDC_LaunchExeButton.Name = "IDC_LaunchExeButton";
+            this.IDC_LaunchExeButton.Size = new System.Drawing.Size(274, 73);
+            this.IDC_LaunchExeButton.TabIndex = 25;
+            this.IDC_LaunchExeButton.Text = "Launch EXE";
+            this.IDC_LaunchExeButton.UseVisualStyleBackColor = true;
+            this.IDC_LaunchExeButton.Click += new System.EventHandler(this.IDC_LaunchExeButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(2568, 1668);
+            this.ClientSize = new System.Drawing.Size(2506, 1666);
+            this.Controls.Add(this.IDC_LaunchExeButton);
             this.Controls.Add(this.Timestamp);
             this.Controls.Add(this.IDC_timestampCtrl);
             this.Controls.Add(this.IDC_GPStimebox);
@@ -474,6 +487,7 @@
         private System.Windows.Forms.Button IDC_test;
         private System.Windows.Forms.Button IDC_tncConnect;
         private System.Windows.Forms.TextBox IDC_GPStimebox;
+        private System.Windows.Forms.Button IDC_LaunchExeButton;
         private System.Windows.Forms.Label Timestamp;
         private System.Windows.Forms.ComboBox IDC_timestampCtrl;
     }

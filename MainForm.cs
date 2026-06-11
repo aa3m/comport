@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Reflection;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Globalization;
 
@@ -22,7 +23,7 @@ namespace Comport
         static int Output_line_count = 0;
         static int sent_line_count = 0;
         const int Max_line = 50;
-
+     
         public struct SystemTime        //structure capable of holding pc system time. Not in use in this program but may be useful for future development to compare pc system time to gps time from the GPS module. AA3M 5/4/2026
         {
             public ushort Year;
@@ -44,6 +45,8 @@ namespace Comport
 
             IDC_Input.Text = "";
 
+          
+
             m_COM = new SerialPort();
 
 
@@ -59,6 +62,31 @@ namespace Comport
             IDC_InputDisplayMode.SelectedIndex = 3;  // choose ASCII (3) as default AA3M 3/30/25
             IDC_GPStimebox.Text = "GPS Time";
             IDC_timestampCtrl.SelectedIndex = 1; // Default "ON"  0 = OFF, 1 = ON
+
+
+        }
+
+        private void IDC_LaunchExeButton_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*";
+                ofd.Title = "Select an executable to launch";
+                ofd.CheckFileExists = true;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        ProcessStartInfo psi = new ProcessStartInfo(ofd.FileName);
+                        psi.UseShellExecute = true;
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Failed to launch executable:\r\n" + ex.Message, "Launch Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         private void IDC_Send_Click(object sender, EventArgs e)
